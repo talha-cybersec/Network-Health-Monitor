@@ -1,25 +1,70 @@
 # Smart Network Health Analyzer
-A Python-based desktop application for real-time network performance analysis.
 
-## 📌 Project Overview
-The **Smart Network Health Analyzer** evaluates the quality and performance of a computer network for a specific domain name (e.g., google.com). It provides users with a clear understanding of their internet connection health through critical networking parameters.
+A Python desktop application that checks how healthy your connection to a given host is. It measures TCP latency and jitter, checks DNS resolution, and turns the results into a single **0–100 health score** with a plain-language verdict.
 
-## 🚀 Key Features
-* **TCP Latency Measurement:** Establishes multiple TCP connections to measure round-trip time (RTT) in milliseconds.
-* **Jitter Analysis:** Determines the amount of change between successive latency measurements to evaluate stability.
-* **DNS Resolution Performance:** Converts domain names to IP addresses and measures the resolution delay.
-* **Network Health Score:** Automatically computes a score from 0 to 100 based on latency, jitter, and DNS success.
-* **Visual Dashboard:** Displays results through a simple GUI and categorizes quality as Good, Average, or Poor.
+> Built as a Computer Networks course project. The project report and presentation are in [`docs/`](docs/).
 
-## 🛠 Tools & Technologies
-* **Language:** Python 3
-* **GUI Library:** Tkinter
-* **Graphing:** Matplotlib (for latency variation bar graphs)
-* **Modules:** `socket` (DNS/TCP), `time` (delays), and `statistics` (averages/jitter)
+## ✨ Features
 
-## 🏗 How it Works
-1. **User Input:** Enter a domain name and click 'Analyze Network'.
-2. **Backend Logic:** The system performs DNS resolution and runs multiple TCP latency tests.
-3. **Calculation:** The app calculates the average latency and jitter.
-4. **Output:** A final health score and a bar graph of latency variations are displayed.
+- **TCP latency measurement:** opens 6 TCP connections to the target (port 80) and records the connect time of each in milliseconds
+- **Jitter analysis:** computes the standard deviation of the latency samples to show how stable the connection is
+- **DNS check:** confirms the hostname resolves to an IP address
+- **Health score (0–100):** penalises high average latency (>80 ms, >150 ms) and high jitter (>20 ms, >50 ms)
+- **Verdict:** `GOOD`, `MODERATE` or `POOR`, with a recommendation (e.g. "Gaming, Streaming, Browsing OK")
+- **Visual output:** bar chart of every latency sample, drawn in the Tkinter GUI
 
+## 🛠 Tech Stack
+
+| Component | Used for |
+|---|---|
+| Python 3 | Core language |
+| Tkinter | Desktop GUI and bar chart (canvas) |
+| `socket` | TCP connections and DNS resolution |
+| `time`, `statistics` | Timing, mean latency and jitter |
+
+It uses only the Python standard library, so there's nothing extra to install.
+
+## 🚀 Getting Started
+
+```bash
+git clone https://github.com/talha-cybersec/Network-Health-Monitor.git
+cd Network-Health-Monitor
+python network_health_gui.py
+```
+
+Enter a host such as `google.com` and click **Analyze Network**.
+
+> On Linux, Tkinter may need to be installed separately: `sudo apt install python3-tk`
+
+## ⚙️ How the Score Works
+
+| Condition | Penalty |
+|---|---|
+| Average latency > 150 ms | −40 |
+| Average latency > 80 ms | −20 |
+| Jitter > 50 ms | −30 |
+| Jitter > 20 ms | −15 |
+
+Score ≥ 80 → **GOOD** · 50–79 → **MODERATE** · < 50 → **POOR**
+
+## 📁 Project Structure
+
+```
+Network-Health-Monitor/
+├── network_health_gui.py   # Application (network tests + GUI)
+├── docs/
+│   ├── CN-PROJECT.pdf      # Project report
+│   └── CN-Project.pptx     # Presentation slides
+└── README.md
+```
+
+## 🔮 Possible Improvements
+
+- Measure DNS resolution time as well as success or failure
+- Add ICMP ping and packet-loss percentage
+- Run tests in a background thread so the GUI stays responsive
+- Export results to CSV
+
+## 👤 Author
+
+**Muhammad Talha** · [@talha-cybersec](https://github.com/talha-cybersec)
